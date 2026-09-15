@@ -2,9 +2,9 @@
 
 // 1. Global Scope
 
-var globalVar = "Global var";
-let globalLet = "Global let";
-const globalConst = "Global const";
+var globalVar = "I am global";
+let globalLet = "I am also global";
+const globalConst = "I am global too";
 
 console.log(globalVar);
 console.log(globalLet);
@@ -13,7 +13,7 @@ console.log(globalConst);
 // 2. Function Scope
 
 function testVar() {
-  var message = "Hello from function";
+  var message = "var is function-scoped";
   console.log(message);
 }
 testVar();
@@ -23,8 +23,9 @@ testVar();
 // 3. Block Scope
 
 if (true) {
-  let blockLet = "Hello from block";
-  const blockConst = "Hello from block";
+  let blockLet = "let is block-scoped";
+  const blockConst = "const is block-scoped";
+
   console.log(blockLet);
   console.log(blockConst);
 }
@@ -32,101 +33,184 @@ if (true) {
 // console.log(blockLet); // ReferenceError
 // console.log(blockConst); // ReferenceError
 
-// 4. var is not Block Scoped
+// 4. var ignores Block Scope
 
-if (true) var blockVar = "var ignores block scope";
+if (true) var blockVar = "var can escape a block";
 console.log(blockVar);
 
-// 5. Reassignment
+// 5. Lexical Scope
+
+const outerValue = "I am outside";
+
+function showOuterValue() {
+  console.log(outerValue);
+}
+showOuterValue();
+
+// 6. Nested Scope
+
+const globalValue = "global";
+function outerFunction() {
+  const outerValue = "outer";
+
+  if (true) {
+    const innerValue = "inner";
+    console.log(globalValue);
+    console.log(outerValue);
+    console.log(innerValue);
+  }
+}
+outerFunction();
+
+// 7. Shadowing
+
+let shadowedName = "Global";
+
+function testShadowing() {
+  let shadowedName = "Local";
+  console.log(shadowedName);
+}
+testShadowing();
+
+console.log(shadowedName);
+
+// 8. Redeclaration
+
+var userName = "Elman";
+var userName = "Matt";
+
+console.log(userName);
+
+// let age = 19;
+// let age = 20; // SyntaxError
+
+// const language = "JavaScript";
+// const language = "TypeScript"; // SyntaxError
+
+// 9. Reassignment
 
 var score = 10;
 score = 20;
 console.log(score);
 
-let age = 19;
-age = 20;
-console.log(age);
-const name = "Elman";
+let level = 1;
+level = 2;
+console.log(level);
+const country = "Iran";
 
-// name = "Matt"; // TypeError
+// country = "UK"; // TypeError
 
-// 6. Redeclaration
-
-var username = "Elman";
-var username = "Matt";
-console.log(username); // SyntaxError
-
-// const language = "JavaScript";
-// const language = "TypeScript"; // SyntaxError
-
-// 7. const and Objects
+// 10. const with Objects
 
 const user = {
   name: "Elman",
-  role: "Developer",
+  role: "Web Developer",
 };
-user.role = "Data Engineer";
+user.role = "Web Security Engineer";
 console.log(user);
 
 // user = {}; // TypeError
 
-// 8. Hoisting with var
+// 11. const with Arrays
 
+const numbers = [1, 2, 3];
+numbers.push(4);
+console.log(numbers);
+
+// numbers = [10, 20]; // TypeError
+
+// 12. Hoisting with var
+
+console.log(hoistedVar); // undefined
+
+var hoistedVar = "var was hoisted";
 console.log(hoistedVar);
-var hoistedVar = "Hello";
 
-// 9. Temporal Dead Zone (TDZ)
+// 13. Hoisting with let and const
 
 // console.log(hoistedLet); // ReferenceError
-let hoistedLet = "Hello";
-console.log(hoistedLet);
+// console.log(hoistedConst); // ReferenceError
 
-// 10. Scope in Loops
+let hoistedLet = "initialized later";
+const hoistedConst = "also initialized later";
+
+console.log(hoistedLet);
+console.log(hoistedConst);
+
+// 14. Loop Scope with var
 
 for (var i = 0; i < 3; i++) console.log(i);
-console.log(i);
 
-// for (let j = 0; j < 3; j++) {
-// console.log(j);
-// }
+console.log("var i:", i); // 3
+
+// 15. Loop Scope with let
+
+for (let j = 0; j < 3; j++) console.log(j);
 
 // console.log(j); // ReferenceError
 
-// 11. var vs let in Closures
+// 16. const in a for...of loop
 
-const varFunctions = [];
+for (const item of ["HTML", "CSS", "JavaScript"]) console.log(item);
 
+// 17. Closures: var vs let
+
+var varFunctions = [];
 for (var x = 0; x < 3; x++) {
   varFunctions.push(function () {
     return x;
   });
 }
+console.log(
+  "var closure:",
+  varFunctions[0](),
+  varFunctions[1](),
+  varFunctions[2](),
+);
 
-console.log(varFunctions[0]());
-console.log(varFunctions[1]());
-console.log(varFunctions[2]());
+// 3 3 3
 
-// let creates a new binding for each loop iteration
-
-const letFunctions = [];
-
+let letFunctions = [];
 for (let y = 0; y < 3; y++) {
   letFunctions.push(function () {
     return y;
   });
 }
+console.log(
+  "let closure:",
+  letFunctions[0](),
+  letFunctions[1](),
+  letFunctions[2](),
+);
 
-console.log(letFunctions[0]());
-console.log(letFunctions[1]());
-console.log(letFunctions[2]());
+// 0 1 2
 
-// 12. Practical Example
+// 18. Practical Example
+
+function calculateTotal(price, taxRate) {
+  const tax = price * taxRate;
+  let total = price + tax;
+
+  if (total > 100) {
+    let discount = 10;
+    total -= discount;
+    console.log("Discount applied:", discount);
+  }
+  return total;
+}
+console.log(calculateTotal(100, 0.1));
+console.log(calculateTotal(200, 0.1));
+
+// 19. Practical Rule
 
 const appName = "Voxa";
 let requestCount = 0;
-
-requestCount++;
 requestCount++;
 
 console.log(appName);
 console.log(requestCount);
+
+// Modern rule:
+// const -> default choice
+// let -> when reassignment is needed
+// var -> usually avoid in modern JavaScript
